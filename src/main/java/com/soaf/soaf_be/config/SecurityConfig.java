@@ -69,7 +69,7 @@ public class SecurityConfig {
         // 나머지는 모두 로그인을 해서 인증이 됐을 경우에만 허용
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join", "/swagger-ui/index.html#").permitAll()
+                        .requestMatchers("/login", "/", "/join", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
         //---------------------
