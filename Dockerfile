@@ -1,26 +1,17 @@
-# Maven을 사용하여 애플리케이션을 빌드하기 위한 이미지를 가져옵니다.
-FROM maven:3.8.4-openjdk-17 AS builder
+# Use the official Maven image to create a build artifact.
+# Use an image with JDK 17
+FROM maven:3.8.4-openjdk-17 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package -DskipTests
 
-# 작업 디렉토리를 설정합니다.
-WORKDIR /app
+# Use the official OpenJDK image for a lean runtime environment.
+FROM openjdk:17-jdk-alpine
+VOLUME /tmp
+COPY --from=build /home/app/target/*.jar app.jar
 
-# 프로젝트의 전체 소스 코드를 복사합니다.
-COPY . .
-
-# Maven을 사용하여 애플리케이션을 빌드합니다.
-RUN mvn clean package
-
-# 애플리케이션을 실행할 OpenJDK 기반의 JRE 이미지를 가져옵니다.
-FROM openjdk:17-alpine
-
-# 작업 디렉토리를 설정합니다.
-WORKDIR /app
-
-# 빌드한 JAR 파일을 가져옵니다.
-COPY --from=builder /app/target/soaf_be-0.0.1-SNAPSHOT.jar ./app.jar
-
-# 애플리케이션의 포트를 노출합니다. 필요에 따라 포트를 변경하세요.
+# Expose port 8080 for the application
 EXPOSE 8080
 
-# Docker 컨테이너가 시작될 때 실행할 명령을 지정합니다.
-CMD ["java", "-jar", "app.jar"]
+# Run the application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
