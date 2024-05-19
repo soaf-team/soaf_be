@@ -5,12 +5,13 @@ import com.soaf.soaf_be.service.JoinService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@Controller
+@RestController
 @ResponseBody
 @Tag(name = "Home Controller", description = "This REST controller provide servcies to manage join")
 public class JoinController {
@@ -25,9 +26,9 @@ public class JoinController {
     @PostMapping("/join")
     @ResponseStatus(code= HttpStatus.OK)
     @Operation(summary = "join")
-    public String joinProcess(JoinDTO joinDTO) {
+    public String joinProcess(@RequestBody JoinDTO joinDTO) {
 
-        System.out.println(joinDTO.getUsername());
+        System.out.println(joinDTO);
         joinService.joinProcess(joinDTO);
 
         return "ok";

@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     // existsBy... db 에 존재 여부를 체크해주는 Jpa 메서드
     Boolean existsByUsername(String username);
 
+    UserEntity findByUsername(String username);
 }
